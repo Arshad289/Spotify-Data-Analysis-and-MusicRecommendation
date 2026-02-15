@@ -17,7 +17,7 @@ A comprehensive data science project that analyzes **160,000+ Spotify tracks** t
 | **EDA** | Correlation heatmaps, popularity distributions, genre analysis |
 | **Clustering** | K-Means (k=8) on 9 normalized audio features |
 | **Recommender** | Cosine-similarity engine returning top-N similar tracks |
-| **Relevance** | 85%+ user-relevance score in manual evaluation |
+| **Relevance** | High subjective relevance verified through spot-checks |
 
 ---
 
@@ -150,7 +150,7 @@ Output: 5 tracks with similarity scores ≥ 0.98
 | **Cosine Similarity Computation** | ~15-20 seconds (160K × 160K matrix) |
 | **K-Means Clustering (k=8)** | ~45 seconds |
 | **Recommendation Generation** | <1 second per query |
-| **Visualization Creation** | ~10 seconds (8 charts) |
+| **Visualization Creation** | ~10 seconds (9 charts) |
 | **Total Runtime** | ~2-3 minutes (full pipeline) |
 | **Memory Usage** | ~500-600 MB peak |
 
@@ -187,7 +187,7 @@ This would allow you to:
 1. **Energy and loudness** are the strongest correlated audio features (r ≈ 0.76).
 2. Tracks in the **"Chart Topper"** tier average 15% higher danceability than "Emerging" tracks.
 3. **Pop and hip-hop** tracks have the highest median popularity scores across all genres.
-4. The cosine-similarity recommender achieves **85%+ relevance** in manual evaluation, accurately matching mood and tempo.
+4. The cosine-similarity recommender demonstrates high relevance in spot-check evaluations, accurately matching mood and tempo.
 5. K-Means clustering reveals **8 distinct sonic profiles**, useful for playlist curation at scale.
 
 ---
