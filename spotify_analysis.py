@@ -344,7 +344,7 @@ def main():
 
     # Clustering (with elbow method)
     print("\n--- K-Means Clustering ---")
-    df, km = cluster_tracks(df, scaler)
+    df, km = cluster_tracks(df, scaler, n_clusters=8)
     plot_clusters(df, scaler)
     print_cluster_profiles(df)
 
