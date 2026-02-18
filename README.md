@@ -5,7 +5,7 @@
 ![Pandas](https://img.shields.io/badge/Pandas-1.5%2B-green?logo=pandas&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-A comprehensive data science project that analyzes **114,000 Spotify tracks** to uncover audio feature trends, genre distributions, and popularity patterns — then builds a **content-based music recommendation engine** using cosine similarity and K-Means clustering.
+A comprehensive data science project that analyzes the **Spotify Tracks Dataset** (~114K rows raw; ~90K tracks after cleaning) to uncover audio feature trends, genre distributions, and popularity patterns — then builds a **content-based music recommendation engine** using cosine similarity and K-Means clustering.
 
 ---
 
@@ -13,11 +13,11 @@ A comprehensive data science project that analyzes **114,000 Spotify tracks** to
 
 | Area | Detail |
 |---|---|
-| **Dataset** | 114,000 tracks across 114 genres |
+| **Dataset** | ~114K rows raw; ~90K tracks after cleaning (duplicates & nulls removed) |
 | **EDA** | Correlation heatmaps, popularity distributions, genre analysis |
 | **Clustering** | K-Means (k=8) on 9 normalized audio features |
-| **Recommender** | Cosine-similarity engine returning top-N similar tracks |
-| **Relevance** | High subjective relevance verified through spot-checks |
+| **Recommender** | Cosine-similarity engine returning top-N by audio-feature similarity |
+| **Output** | 8 charts in `outputs/`, enriched CSV, console recommendations for 3 demo tracks |
 
 ---
 
@@ -29,9 +29,9 @@ Spotify-Data-Analysis-and-MusicRecommendation/
 ├── requirements.txt         # Python dependencies
 ├── DATASET.md               # Dataset schema & download instructions
 ├── .gitignore
-├── data/                    # Place spotify_tracks.csv here (not tracked)
+├── Data/                    # Place spotify_tracks.csv here (not tracked)
 │   └── .gitkeep
-└── outputs/                 # Generated charts & enriched data
+└── outputs/                 # Generated charts (8 PNGs) & enriched CSV
     └── .gitkeep
 ```
 
@@ -54,7 +54,7 @@ pip install -r requirements.txt
 ### Download the Dataset
 
 1. Download from [Kaggle – Spotify Tracks Dataset](https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset).
-2. Rename the file to `spotify_tracks.csv` and place it inside the `data/` folder.
+2. Rename the file to `spotify_tracks.csv` and place it inside the `data/` folder (or `Data/`; the script checks both).
 3. See [DATASET.md](DATASET.md) for full schema details.
 
 ### Run the Analysis
@@ -69,30 +69,33 @@ This will generate all visualizations in `outputs/` and print recommendation res
 
 ## 🎯 Sample Output
 
-### Example Recommendation Results
+### Recommendation Results
 
-**Input Track:** "Blinding Lights" by The Weeknd
+The script runs the recommender for three demo tracks: **"Blinding Lights"**, **"Shape of You"**, and **"Bohemian Rhapsody"**. Each query returns a table with:
 
-| Rank | Track Name | Artist | Similarity Score | Shared Features |
-|------|------------|--------|------------------|-----------------|
-| 1 | Don't Start Now | Dua Lipa | 0.987 | High energy, danceable, upbeat tempo |
-| 2 | Physical | Dua Lipa | 0.983 | Synth-pop, energetic, similar BPM |
-| 3 | Levitating | Dua Lipa | 0.981 | Dance-pop, high valence, modern production |
-| 4 | Midnight Sky | Miley Cyrus | 0.978 | 80s-inspired, energetic, confident |
-| 5 | Rain On Me | Lady Gaga & Ariana Grande | 0.976 | Dance-pop, uplifting, electronic |
+| Column | Description |
+|--------|-------------|
+| track_name | Name of the recommended track |
+| artists | Artist(s) |
+| track_genre | Genre label from the dataset |
+| popularity | Popularity score (0–100) |
+| similarity_score | Cosine similarity to the seed track (0–1) |
+
+Recommendations are based **only on audio-feature similarity** (the 9 features). Genre and artist are not used, so recommended tracks can be from any genre that happens to have similar danceability, energy, loudness, etc. Scores are typically high (e.g. ≥ 0.99) when searching within nearby K-Means clusters.
 
 ### K-Means Cluster Profiles
 
-| Cluster | Profile Description | Example Tracks | Avg Features |
-|---------|---------------------|----------------|--------------|
-| 0 | **High-Energy Dance** | EDM, House, Dance-Pop | Energy: 0.85, Danceability: 0.78 |
-| 1 | **Acoustic Ballads** | Folk, Singer-Songwriter | Acousticness: 0.82, Energy: 0.32 |
-| 2 | **Heavy & Loud** | Metal, Hard Rock | Loudness: -4.2 dB, Energy: 0.91 |
-| 3 | **Chill & Instrumental** | Lo-fi, Ambient, Classical | Instrumentalness: 0.76, Valence: 0.45 |
-| 4 | **Rap & Hip-Hop** | Hip-Hop, Trap | Speechiness: 0.24, Energy: 0.68 |
-| 5 | **Live Performances** | Live albums, Concerts | Liveness: 0.68, Acousticness: 0.52 |
-| 6 | **Sad & Melancholic** | Sad songs, Breakup tracks | Valence: 0.28, Energy: 0.41 |
-| 7 | **Happy & Upbeat** | Pop, Feel-good tracks | Valence: 0.82, Danceability: 0.73 |
+The script prints **Cluster Audio Profiles (mean values)** for all 8 clusters. Exact numbers depend on your cleaned dataset. Illustrative profile types the clustering often reveals:
+
+| Cluster | Typical profile (data-driven) |
+|---------|-------------------------------|
+| 0–1 | Mixed / upbeat (e.g. higher danceability, valence) |
+| 2–3 | Acoustic, chill, or highly instrumental |
+| 4 | High energy and/or instrumental |
+| 5 | High liveness (live recordings), more speechiness |
+| 6–7 | High energy, low acousticness; or high valence/danceability |
+
+Run the script to see the full mean-value table and cluster counts for your data.
 
 ### Audio Feature Correlations (Top 5)
 
@@ -119,14 +122,9 @@ Tracks are clustered into **8 groups** based on 9 normalized audio features (dan
 
 ### 3. Content-Based Recommendation Engine
 - Scales all audio features to [0, 1] using MinMaxScaler.
-- Computes pairwise **cosine similarity** across all tracks.
-- Given a seed track, returns the top-N most sonically similar songs.
-
-**Example:**
-```
-Input:  "Blinding Lights" – The Weeknd
-Output: 5 tracks with similarity scores ≥ 0.98
-```
+- For each query, computes **cosine similarity** between the seed track and candidates (cluster-scoped for speed).
+- Returns the top-N tracks by similarity. Demo runs for "Blinding Lights", "Shape of You", and "Bohemian Rhapsody" (5 recommendations each).
+- **Note:** Similarity is purely on the 9 audio features; genre and artist are not considered.
 
 ---
 
@@ -145,12 +143,13 @@ Output: 5 tracks with similarity scores ≥ 0.98
 
 | Metric | Value |
 |--------|-------|
-| **Data Loading** | ~2-3 seconds (114K tracks) |
+| **Data Loading** | ~2-3 seconds (~114K raw rows) |
+| **Cleaned Tracks** | ~90K (after dedup & null drop) |
 | **Feature Scaling** | ~2 seconds (MinMaxScaler) |
-| **Cosine Similarity Computation** | ~8-12 seconds (114K, Cluster-scoped) |
+| **Cosine Similarity** | Cluster-scoped (fast per-query) |
 | **K-Means Clustering (k=8)** | ~45 seconds |
 | **Recommendation Generation** | <1 second per query |
-| **Visualization Creation** | ~10 seconds (9 charts) |
+| **Visualization Creation** | ~10 seconds (8 PNGs in `outputs/`) |
 | **Total Runtime** | ~2-3 minutes (full pipeline) |
 | **Memory Usage** | ~250-350 MB peak |
 
@@ -185,10 +184,10 @@ This would allow you to:
 ## 📈 Key Findings
 
 1. **Energy and loudness** are the strongest correlated audio features (r ≈ 0.76).
-2. Tracks in the **"Chart Topper"** tier average 14% higher danceability than "Emerging" tracks.
-3. **Pop and hip-hop** tracks have the highest median popularity scores across all genres.
-4. The cosine-similarity recommender demonstrates high relevance in spot-check evaluations, accurately matching mood and tempo.
-5. K-Means clustering reveals **8 distinct sonic profiles**, useful for playlist curation at scale.
+2. Tracks in the **"Chart Topper"** tier tend to have higher danceability and energy than "Emerging" tracks.
+3. **Pop and hip-hop** are among the top genres by track count and median popularity in the dataset.
+4. The recommender returns the **top-N by audio-feature cosine similarity**; it does not use genre or artist, so recommended tracks can span many genres.
+5. K-Means (k=8) reveals **8 distinct sonic profiles** from the 9 normalized features; cluster means are printed when you run the script.
 
 ---
 

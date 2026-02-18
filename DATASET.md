@@ -7,7 +7,7 @@ https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset
 ## Download Instructions
 1. Visit the Kaggle link above and download `dataset.csv`.
 2. Rename the file to `spotify_tracks.csv`.
-3. Place it in the `data/` folder of this repository.
+3. Place it in the `data/` or `Data/` folder of this repository (the script checks both).
 
 ## Overview
 The dataset contains **114,000 Spotify tracks** across 114 genres, retrieved via the Spotify Web API. Each row represents a unique track with metadata and audio features computed by Spotify's internal algorithms.

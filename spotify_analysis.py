@@ -12,6 +12,9 @@ Dataset: Spotify Tracks Dataset (Kaggle)
 https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset
 """
 
+import os
+from typing import Optional
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -35,9 +38,22 @@ AUDIO_FEATURES = [
 # 1. DATA LOADING & CLEANING
 # ──────────────────────────────────────────────────────────
 
-def load_and_clean_data(filepath: str = "data/spotify_tracks.csv") -> pd.DataFrame:
+def _resolve_data_path(filepath: Optional[str] = None) -> str:
+    """Resolve path to dataset; try both data/ and Data/ for cross-platform compatibility."""
+    if filepath is not None and os.path.isfile(filepath):
+        return filepath
+    for path in ("data/spotify_tracks.csv", "Data/spotify_tracks.csv"):
+        if os.path.isfile(path):
+            return path
+    raise FileNotFoundError(
+        "Dataset not found. Place spotify_tracks.csv in a 'data/' or 'Data/' folder. See DATASET.md."
+    )
+
+
+def load_and_clean_data(filepath: Optional[str] = None) -> pd.DataFrame:
     """Load the Spotify dataset and perform initial cleaning."""
-    df = pd.read_csv(filepath, index_col=0)
+    path = _resolve_data_path(filepath)
+    df = pd.read_csv(path, index_col=0)
     print(f"Raw dataset shape: {df.shape}")
 
     # Drop duplicates based on track_id
@@ -201,7 +217,7 @@ def find_optimal_clusters(X_scaled: np.ndarray, max_k: int = 12) -> int:
     return optimal_k
 
 
-def cluster_tracks(df: pd.DataFrame, scaler: MinMaxScaler, n_clusters: int = None) -> pd.DataFrame:
+def cluster_tracks(df: pd.DataFrame, scaler: MinMaxScaler, n_clusters: int = None) -> tuple[pd.DataFrame, KMeans]:
     """Apply K-Means clustering on scaled audio features."""
     X_scaled = scaler.transform(df[AUDIO_FEATURES])
 
@@ -282,26 +298,26 @@ def build_recommendation_engine(df: pd.DataFrame, scaler: MinMaxScaler):
         query_vec = feature_matrix[idx].reshape(1, -1)
 
         if search_full or "cluster" not in df.columns:
-            # Search all tracks (slower but exhaustive)
-            candidates = df.index.tolist()
+            # Search all tracks (slower but exhaustive); use iloc positions
+            candidate_ilocs = list(range(len(df)))
         else:
             # Search within same cluster + adjacent clusters for speed
-            query_cluster = df["cluster"].iloc[idx]
             cluster_centers = df.groupby("cluster")[AUDIO_FEATURES].mean()
             center_dists = ((cluster_centers - df[AUDIO_FEATURES].iloc[idx]) ** 2).sum(axis=1)
             nearby_clusters = center_dists.nsmallest(3).index.tolist()
-            candidates = df[df["cluster"].isin(nearby_clusters)].index.tolist()
+            candidate_ilocs = np.where(df["cluster"].isin(nearby_clusters))[0].tolist()
 
-        candidate_matrix = feature_matrix[candidates]
+        candidate_matrix = feature_matrix[candidate_ilocs]
         scores = cosine_similarity(query_vec, candidate_matrix)[0]
 
         # Get top N+1 (skip self)
         top_indices = np.argsort(scores)[::-1]
         results = []
         for i in top_indices:
-            if candidates[i] == idx:
+            pos = candidate_ilocs[i]
+            if pos == idx:
                 continue
-            results.append((candidates[i], scores[i]))
+            results.append((pos, scores[i]))
             if len(results) >= n:
                 break
 
@@ -322,7 +338,6 @@ def build_recommendation_engine(df: pd.DataFrame, scaler: MinMaxScaler):
 # ──────────────────────────────────────────────────────────
 
 def main():
-    import os
     os.makedirs("outputs", exist_ok=True)
 
     # Load & clean
