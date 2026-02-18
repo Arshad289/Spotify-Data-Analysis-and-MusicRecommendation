@@ -4,7 +4,7 @@ Spotify Data Analysis and Music Recommendation System
 Author: Arshad Ali Mohammed
 GitHub: https://github.com/Arshad289
 
-Analyzes 160,000+ Spotify tracks to uncover audio feature trends,
+Analyzes 114,000 Spotify tracks to uncover audio feature trends,
 genre distributions, and artist popularity patterns. Builds a
 content-based recommendation engine using cosine similarity.
 
@@ -37,7 +37,7 @@ AUDIO_FEATURES = [
 
 def load_and_clean_data(filepath: str = "data/spotify_tracks.csv") -> pd.DataFrame:
     """Load the Spotify dataset and perform initial cleaning."""
-    df = pd.read_csv(filepath)
+    df = pd.read_csv(filepath, index_col=0)
     print(f"Raw dataset shape: {df.shape}")
 
     # Drop duplicates based on track_id
@@ -255,7 +255,7 @@ def build_recommendation_engine(df: pd.DataFrame, scaler: MinMaxScaler):
     Build a scalable cosine-similarity recommender.
 
     Instead of precomputing the full N x N similarity matrix (which would
-    require ~200GB for 160K tracks), computes similarity on-the-fly for
+    require ~200GB for 114K tracks), computes similarity on-the-fly for
     the query track against only its cluster, then optionally searches
     neighboring clusters.
 
