@@ -10,7 +10,7 @@ https://www.kaggle.com/datasets/maharshipandya/-spotify-tracks-dataset
 3. Place it in the `data/` folder of this repository.
 
 ## Overview
-The dataset contains **114,000+ Spotify tracks** across 114 genres, retrieved via the Spotify Web API. Each row represents a unique track with metadata and audio features computed by Spotify's internal algorithms.
+The dataset contains **114,000 Spotify tracks** across 114 genres, retrieved via the Spotify Web API. Each row represents a unique track with metadata and audio features computed by Spotify's internal algorithms.
 
 ## Schema
 
