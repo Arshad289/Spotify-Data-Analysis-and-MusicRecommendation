@@ -145,19 +145,19 @@ Output: 5 tracks with similarity scores ≥ 0.98
 
 | Metric | Value |
 |--------|-------|
-| **Data Loading** | ~3-5 seconds (160K tracks) |
+| **Data Loading** | ~2-3 seconds (114K tracks) |
 | **Feature Scaling** | ~2 seconds (MinMaxScaler) |
-| **Cosine Similarity Computation** | ~15-20 seconds (160K × 160K matrix) |
+| **Cosine Similarity Computation** | ~8-12 seconds (114K, Cluster-scoped) |
 | **K-Means Clustering (k=8)** | ~45 seconds |
 | **Recommendation Generation** | <1 second per query |
 | **Visualization Creation** | ~10 seconds (9 charts) |
 | **Total Runtime** | ~2-3 minutes (full pipeline) |
-| **Memory Usage** | ~500-600 MB peak |
+| **Memory Usage** | ~250-350 MB peak |
 
 ### System Requirements
 - **Minimum:** 4 GB RAM, Python 3.9+
 - **Recommended:** 8 GB RAM for faster processing
-- **Storage:** ~500 MB (dataset + outputs)
+- **Storage:** ~100 MB (dataset + outputs)
 
 ---
 
