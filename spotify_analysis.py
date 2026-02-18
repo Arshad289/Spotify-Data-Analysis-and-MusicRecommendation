@@ -255,7 +255,7 @@ def build_recommendation_engine(df: pd.DataFrame, scaler: MinMaxScaler):
     Build a scalable cosine-similarity recommender.
 
     Instead of precomputing the full N x N similarity matrix (which would
-    require ~200GB for 114K tracks), computes similarity on-the-fly for
+    require ~52GB for 114K tracks), computes similarity on-the-fly for
     the query track against only its cluster, then optionally searches
     neighboring clusters.
 
