@@ -5,7 +5,7 @@
 ![Pandas](https://img.shields.io/badge/Pandas-1.5%2B-green?logo=pandas&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-A comprehensive data science project that analyzes **160,000+ Spotify tracks** to uncover audio feature trends, genre distributions, and popularity patterns — then builds a **content-based music recommendation engine** using cosine similarity and K-Means clustering.
+A comprehensive data science project that analyzes **114,000 Spotify tracks** to uncover audio feature trends, genre distributions, and popularity patterns — then builds a **content-based music recommendation engine** using cosine similarity and K-Means clustering.
 
 ---
 
@@ -13,7 +13,7 @@ A comprehensive data science project that analyzes **160,000+ Spotify tracks** t
 
 | Area | Detail |
 |---|---|
-| **Dataset** | 160,000+ tracks across 125 genres |
+| **Dataset** | 114,000 tracks across 114 genres |
 | **EDA** | Correlation heatmaps, popularity distributions, genre analysis |
 | **Clustering** | K-Means (k=8) on 9 normalized audio features |
 | **Recommender** | Cosine-similarity engine returning top-N similar tracks |
