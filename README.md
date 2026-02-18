@@ -99,10 +99,10 @@ This will generate all visualizations in `outputs/` and print recommendation res
 | Feature Pair | Correlation Coefficient | Interpretation |
 |--------------|------------------------|----------------|
 | Energy ↔ Loudness | +0.76 | Energetic songs are louder |
-| Energy ↔ Acousticness | -0.68 | Acoustic songs tend to be calmer |
-| Danceability ↔ Valence | +0.52 | Danceable songs are often happier |
-| Speechiness ↔ Instrumentalness | -0.48 | More speech = less instrumental |
-| Liveness ↔ Energy | +0.31 | Live tracks tend to be more energetic |
+| Energy ↔ Acousticness | -0.73 | Acoustic songs tend to be calmer |
+| Danceability ↔ Valence | +0.48 | Danceable songs are often happier |
+| Speechiness ↔ Instrumentalness | -0.09 | More speech = less instrumental |
+| Liveness ↔ Energy | +0.18 | Live tracks tend to be more energetic |
 
 ---
 
@@ -185,7 +185,7 @@ This would allow you to:
 ## 📈 Key Findings
 
 1. **Energy and loudness** are the strongest correlated audio features (r ≈ 0.76).
-2. Tracks in the **"Chart Topper"** tier average 15% higher danceability than "Emerging" tracks.
+2. Tracks in the **"Chart Topper"** tier average 14% higher danceability than "Emerging" tracks.
 3. **Pop and hip-hop** tracks have the highest median popularity scores across all genres.
 4. The cosine-similarity recommender demonstrates high relevance in spot-check evaluations, accurately matching mood and tempo.
 5. K-Means clustering reveals **8 distinct sonic profiles**, useful for playlist curation at scale.
